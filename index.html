@@ -2,846 +2,287 @@
 <html lang="ko">
     <head>
         <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <title>케이웨이컴퍼니 ERP 구축 기획안</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>통역사 파견/관리 시스템 – 기능 명세서</title>
+
         <style>
-            /* ===== Print-First Document Styles (A4) ===== */
-            @page {
-                size: A4;
-                margin: 18mm 16mm 20mm 16mm;
-            }
-            :root {
-                --ink: #111827; /* gray-900 */
-                --muted: #4b5563; /* gray-600 */
-                --line: #e5e7eb; /* gray-200 */
-                --accent: #0ea5e9; /* sky-500 */
-                --brand: #111827;
-                --paper: #ffffff;
-                --panel: #ffffff;
-                --radius: 10px;
-            }
-            * {
-                box-sizing: border-box;
-            }
-            html,
             body {
-                height: auto;
-            }
-            body {
+                font-family: "Noto Sans KR", sans-serif;
                 margin: 0;
-                font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto,
-                    "Apple SD Gothic Neo", Noto Sans KR, "Helvetica Neue", Arial;
-                color: var(--ink);
-                background: var(--paper);
-                line-height: 1.55;
+                background: #f5f6fa;
+                color: #333;
+                line-height: 1.6;
             }
 
-            /* Screen container */
-            .toolbar {
-                position: sticky;
-                top: 0;
-                z-index: 20;
-                background: #f8fafc;
-                border-bottom: 1px solid var(--line);
-                padding: 10px 16px;
-                display: flex;
-                align-items: center;
-                gap: 10px;
-            }
-            .toolbar h1 {
-                font-size: 16px;
-                margin: 0;
-                font-weight: 600;
-            }
-            .toolbar button {
-                padding: 8px 12px;
-                border: 1px solid #cbd5e1;
-                background: white;
-                border-radius: 8px;
-                cursor: pointer;
-            }
-            .toolbar button:hover {
-                border-color: #94a3b8;
+            header {
+                background: #2d6cdf;
+                color: white;
+                padding: 40px 30px;
+                text-align: center;
+                font-size: 26px;
+                font-weight: 700;
+                box-shadow: 0 3px 8px rgba(0, 0, 0, 0.18);
             }
 
             .container {
-                max-width: 820px;
-                margin: 0 auto;
-                padding: 18px 18px 40px;
-                display: block;
+                max-width: 1080px;
+                margin: 40px auto;
+                background: white;
+                padding: 40px 50px;
+                border-radius: 12px;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
             }
-            .sidebar {
+
+            h2 {
+                color: #1e3f86;
+                border-left: 6px solid #2d6cdf;
+                padding-left: 12px;
+                margin-top: 60px;
+            }
+
+            h3 {
+                color: #2d6cdf;
+                margin-top: 35px;
+                margin-bottom: 10px;
+            }
+
+            ul {
+                margin-left: 0;
+                padding-left: 20px;
+            }
+
+            li {
+                margin-bottom: 6px;
+            }
+
+            .section {
+                margin-bottom: 60px;
+            }
+
+            .card {
+                border: 1px solid #e1e4ea;
+                background: #fafbff;
+                padding: 18px 20px;
+                border-radius: 8px;
+                margin-bottom: 15px;
+            }
+
+            footer {
+                text-align: center;
+                padding: 40px 0;
+                margin-top: 40px;
+                font-size: 14px;
+                color: #777;
+            }
+
+            .slide-toggle {
+                cursor: pointer;
+                transition: 0.2s ease;
+                font-weight: 600;
+            }
+
+            .slide-content {
                 display: none;
-            }
-            .main {
-                display: block;
+                margin-top: 12px;
             }
 
-            /* Document header & footer repeated on each printed page */
-            .page-header,
-            .page-footer {
-                position: fixed;
-                left: 0;
-                right: 0;
-                color: var(--muted);
-                font-size: 12px;
-            }
-            .page-header {
-                top: 0;
-                border-bottom: 1px solid var(--line);
-                padding: 6mm 16mm;
-            }
-            .page-footer {
-                bottom: 0;
-                border-top: 1px solid var(--line);
-                padding: 6mm 16mm;
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-            }
-            .page-footer .pageno:after {
-                content: "Page " counter(page) " of " counter(pages);
-            }
-
-            /* Title block */
-            .hero {
-                background: transparent;
-                border: none;
-                border-radius: 0;
-                box-shadow: none;
-                padding: 0;
-                margin-top: 12mm;
-            }
-            .hero .kicker {
-                color: var(--muted);
-                letter-spacing: 0.05em;
-                text-transform: uppercase;
-                font-size: 12px;
-            }
-            .hero h2 {
-                font-size: 26px;
-                margin: 6px 0 6px;
-            }
-            .hero p {
-                margin: 0 0 6px;
-                color: var(--muted);
-            }
-            .meta {
-                display: flex;
-                flex-wrap: wrap;
-                gap: 6px;
-                margin-top: 6px;
-            }
-            .badge {
-                background: #eef2ff;
-                border: 1px solid #c7d2fe;
-                color: #3730a3;
-                padding: 2px 8px;
-                border-radius: 999px;
-                font-size: 11px;
-            }
-
-            /* Section cards become clean blocks */
-            section.card {
-                background: var(--panel);
-                border: 1px solid var(--line);
-                border-radius: var(--radius);
-                box-shadow: none;
-                padding: 16px 16px;
-                margin: 14px 0;
-                break-inside: avoid;
-                page-break-inside: avoid;
-            }
-            section.card header {
-                display: flex;
-                align-items: baseline;
-                justify-content: space-between;
-                gap: 14px;
-                margin-bottom: 8px;
-            }
-            section.card h3 {
-                margin: 0;
-                font-size: 18px;
-            }
-            .status {
-                padding: 2px 8px;
-                border-radius: 999px;
-                border: 1px solid #d1d5db;
-                background: #f9fafb;
-                font-size: 11px;
-                color: #374151;
-            }
-
-            .kicker {
-                color: var(--muted);
-                font-size: 12px;
-                letter-spacing: 0.04em;
-                text-transform: uppercase;
-                margin: 2px 0 6px;
-            }
-
-            .grid {
-                display: grid;
-                gap: 12px;
-                grid-template-columns: 1fr 1fr;
-            }
-            .col-6 {
-                grid-column: span 1;
-            }
-            .col-12 {
-                grid-column: 1 / -1;
-            }
-            .panel {
-                background: #fafafa;
-                border: 1px solid var(--line);
-                border-radius: 8px;
-                padding: 12px;
-            }
-
-            table {
-                width: 100%;
-                border-collapse: collapse;
-                border: 1px solid var(--line);
-                border-radius: 8px;
-                overflow: hidden;
-            }
-            th,
-            td {
-                padding: 9px 10px;
-                text-align: left;
-                border-bottom: 1px solid var(--line);
-                vertical-align: top;
-            }
-            th {
-                background: #f3f4f6;
-                color: #374151;
-                font-weight: 700;
-            }
-            tr:last-child td {
-                border-bottom: none;
-            }
-
-            .callout {
-                display: flex;
-                gap: 10px;
-                align-items: flex-start;
-                background: #fffbeb;
-                border: 1px solid #fde68a;
-                color: #92400e;
-                padding: 10px;
-                border-radius: 8px;
-            }
-            .callout.danger {
-                background: #fef2f2;
-                border-color: #fecaca;
-                color: #7f1d1d;
-            }
-            .list {
-                display: grid;
-                gap: 8px;
-            }
-            .list .item {
-                display: flex;
-                gap: 8px;
-                align-items: center;
-                background: #ffffff;
-                border: 1px solid var(--line);
-                border-radius: 8px;
-                padding: 8px 10px;
-            }
-            .list .item code {
-                background: #f3f4f6;
-                border: 1px solid #e5e7eb;
-                padding: 1px 6px;
-                border-radius: 6px;
-                color: #111827;
-                font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
-                    "Liberation Mono", monospace;
-                font-size: 12px;
-            }
-
-            .footer {
-                display: none;
-            }
-            .no-print {
-            }
-
-            /* Print rules */
-            @media print {
-                .toolbar {
-                    display: none !important;
-                }
-                .container {
-                    padding: 0;
-                    max-width: none;
-                }
-                .page-header,
-                .page-footer {
-                    position: fixed;
-                }
-                /* Create top/bottom white space equal to header/footer heights */
-                .hero {
-                    margin-top: 24mm;
-                }
-                section.card {
-                    margin: 10mm 0 8mm;
-                }
-                a {
-                    color: inherit;
-                    text-decoration: none;
-                }
-            }
-
-            /* Small screens */
-            @media (max-width: 860px) {
-                .grid {
-                    grid-template-columns: 1fr;
-                }
-                .col-6,
-                .col-12 {
-                    grid-column: 1 / -1;
-                }
+            .slide-toggle:hover {
+                color: #2d6cdf;
             }
         </style>
+
+        <script>
+            function toggle(id) {
+                const el = document.getElementById(id);
+                el.style.display = el.style.display === "block" ? "none" : "block";
+            }
+        </script>
     </head>
+
     <body>
-        <!-- Screen-only toolbar -->
-        <div class="toolbar no-print">
-            <h1>케이웨이컴퍼니 ERP 구축 기획안</h1>
-        </div>
-        <!-- Printed header/footer on every page -->
-        <div class="page-header">케이웨이컴퍼니 ERP 구축 기획안 · v0.1 Draft</div>
+        <header>📌 통역사 파견/관리 시스템 – 기능 명세서 (Feature Specification v0.9)</header>
 
         <div class="container">
-            <aside class="sidebar">
-                <div class="brand">
-                    <svg
-                        width="28"
-                        height="28"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                    >
-                        <rect
-                            x="3"
-                            y="3"
-                            width="18"
-                            height="18"
-                            rx="4"
-                            stroke="currentColor"
-                            opacity=".8"
-                        />
-                        <path d="M7 12h10M12 7v10" stroke="currentColor" opacity=".8" />
-                    </svg>
-                    <h1>케이웨이컴퍼니 ERP 기획안</h1>
+            <!-- 1. 시스템 개요 -->
+            <div class="section">
+                <h2>1. 시스템 개요</h2>
+                <p>
+                    본 프로젝트는 통역사 파견 및 업무 관리를 위해 관리자 ERP와 통역사 모바일 앱을
+                    구축하여,
+                    <strong
+                        >의뢰 등록 → 실시간 푸시 → 선착 수락 배정 → 서비스 시작/완료 기록 →
+                        일정/현황 관리</strong
+                    >까지 전 과정을 시스템화하는 것을 목표로 합니다.
+                </p>
+
+                <div class="card">
+                    <strong>구성 요소</strong><br />
+                    - 통역사 모바일 앱 (iOS/Android, 내부 배포용)<br />
+                    - 관리자 웹 ERP<br />
+                    - 백엔드 API 및 푸시 서버<br />
+                    - 실시간 상태 반영(WebSocket/Socket.IO)
                 </div>
-                <nav class="toc">
-                    <h2>목차</h2>
-                    <a href="#intro">개요 <span>Overview</span></a>
-                    <a href="#md">1. 매입처 관리 (MD)</a>
-                    <a href="#sales">2. 셀러 관리 (Sales)</a>
-                    <a href="#cm">3. CS 관리 (CM)</a>
-                    <a href="#user">4. 유저 관리</a>
-                    <a href="#infra">5. 부가 작업 (Infra)</a>
-                    <a href="#pending">차후 회의 필요 항목</a>
-                </nav>
-            </aside>
+            </div>
 
-            <main class="main">
-                <section class="hero" id="intro">
-                    <div class="kicker">Project Brief</div>
-                    <h2>케이웨이컴퍼니 ERP 구축 기획 문서</h2>
-                    <p>
-                        MD · Sales · CS · 유저/권한 · 인프라까지 아우르는 사내 ERP의 1차 버전 범위를
-                        정의합니다. 실사용 팀의 업무 흐름에 맞춘 데이터 모델과 화면/기능을 제안하며,
-                        이후 ERD, API 스펙, 와이어프레임으로 확장 가능합니다.
-                    </p>
-                    <div class="meta">
-                        <span class="badge">버전: v0.1 Draft</span>
-                        <span class="badge">작성: PM/DEV</span>
-                        <span class="badge">문서 유형: 기획안</span>
-                    </div>
-                </section>
+            <!-- 2. 사용자 유형 -->
+            <div class="section">
+                <h2>2. 사용자 유형</h2>
 
-                <!-- 1. 매입처 관리 (MD) -->
-                <section class="card" id="md">
-                    <header>
-                        <h3>1. 매입처 관리 (MD)</h3>
-                        <span class="status">관계: 매입처 1 → 품목 N</span>
-                    </header>
+                <h3>1) 관리자(Admin)</h3>
+                <ul>
+                    <li>의뢰 등록/수정/삭제</li>
+                    <li>통역사 배정 현황 모니터링</li>
+                    <li>진행 상태(배정/시작/완료) 실시간 조회</li>
+                    <li>통역사·의뢰 일정 및 이력 관리</li>
+                </ul>
 
-                    <div class="grid">
-                        <div class="col-6">
-                            <div class="panel">
-                                <div class="kicker">구조</div>
-                                <div class="list" style="margin-top: 8px">
-                                    <div class="item">
-                                        상위 엔티티: <code>매입처 (Vendor)</code>
-                                    </div>
-                                    <div class="item">하위 엔티티: <code>품목 (Item)</code></div>
-                                    <div class="item">관계: <code>1:N</code></div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="panel callout">
-                                <svg
-                                    width="20"
-                                    height="20"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    style="margin-top: 2px"
-                                >
-                                    <circle cx="12" cy="12" r="10" stroke="currentColor" />
-                                    <path d="M12 8v5" stroke="currentColor" />
-                                    <circle cx="12" cy="16" r="1" fill="currentColor" />
-                                </svg>
-                                <div>
-                                    <strong>필터 조건 확정 필요</strong><br />
-                                    조회/다운로드 UX와 함께 컬럼별 고급 필터(다중 선택, 범위,
-                                    태그)를 검토합니다.
-                                </div>
-                            </div>
-                        </div>
+                <h3>2) 통역사(User)</h3>
+                <ul>
+                    <li>의뢰 목록 및 상세 확인</li>
+                    <li>푸시 알림 수신</li>
+                    <li>즉시 수락 → 자동 배정 확정</li>
+                    <li>서비스 시작/완료 기록</li>
+                    <li>개인 일정 확인</li>
+                </ul>
+            </div>
 
-                        <div class="col-12">
-                            <div class="kicker">매입처 구성요소</div>
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>항목</th>
-                                        <th>설명</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>담당자</td>
-                                        <td>내부 담당자(MD)</td>
-                                    </tr>
-                                    <tr>
-                                        <td>작성일자 / 수정일자</td>
-                                        <td>최초 등록일, 마지막 수정일</td>
-                                    </tr>
-                                    <tr>
-                                        <td>주요품목</td>
-                                        <td>대표 품목/카테고리 메모</td>
-                                    </tr>
-                                    <tr>
-                                        <td>사업자 상호명 / 번호</td>
-                                        <td>사업자등록증 기준</td>
-                                    </tr>
-                                    <tr>
-                                        <td>업체명 / 브랜드</td>
-                                        <td>거래명과 대표 브랜드</td>
-                                    </tr>
-                                    <tr>
-                                        <td>거래은행 / 계좌번호</td>
-                                        <td>정산용 계좌 정보</td>
-                                    </tr>
-                                    <tr>
-                                        <td>정산자료주체</td>
-                                        <td>정산 자료를 작성/관리하는 주체(내부/외부)</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
+            <!-- 3. 전체 흐름 -->
+            <div class="section">
+                <h2>3. 전체 흐름(Workflow)</h2>
+                <ol>
+                    <li>국제 고객은 기존 플랫폼에서 예약·결제 완료</li>
+                    <li>관리자 ERP에서 신규 의뢰 등록</li>
+                    <li>모든 통역사 앱으로 푸시 알림 발송</li>
+                    <li>통역사가 ‘즉시 수락’ → 서버 원자적 선착 배정</li>
+                    <li>배정된 통역사에게 배정 확정 푸시 발송</li>
+                    <li>현장 도착 후 서비스 시작</li>
+                    <li>업무 종료 후 서비스 완료</li>
+                    <li>관리자 ERP에서 실시간 상태 및 일정 확인</li>
+                </ol>
+            </div>
 
-                        <div class="col-12">
-                            <div class="kicker">품목 구성요소</div>
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>항목</th>
-                                        <th>설명</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>공급처</td>
-                                        <td>실제 공급 주체</td>
-                                    </tr>
-                                    <tr>
-                                        <td>브랜드</td>
-                                        <td>브랜드명</td>
-                                    </tr>
-                                    <tr>
-                                        <td>셀러</td>
-                                        <td>유통/판매 채널</td>
-                                    </tr>
-                                    <tr>
-                                        <td>과세여부</td>
-                                        <td>과세/면세</td>
-                                    </tr>
-                                    <tr>
-                                        <td>상품명</td>
-                                        <td>제품명</td>
-                                    </tr>
-                                    <tr>
-                                        <td>판매가 / 매입가</td>
-                                        <td>소비자가, 매입 단가</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
+            <!-- 4. 기능 상세 -->
+            <div class="section">
+                <h2>4. 기능 상세 명세 (Platform 별)</h2>
 
-                        <div class="col-12">
-                            <div class="kicker">주요 기능</div>
-                            <div class="list">
-                                <div class="item">
-                                    매입처 <code>등록 · 수정 · 삭제 · 조회</code> (*필터 협의)
-                                </div>
-                                <div class="item">
-                                    매입처별 품목 <code>등록 · 수정 · 삭제 · 조회</code> (*필터
-                                    협의)
-                                </div>
-                                <div class="item">공구진행가능 리스트 <code>조회/수정</code></div>
-                                <div class="item">
-                                    브랜드별 공구가능목록+단가정보 <code>엑셀 저장</code>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- 2. 셀러 관리 (Sales) -->
-                <section class="card" id="sales">
-                    <header>
-                        <h3>2. 셀러 관리 (Sales)</h3>
-                        <span class="status">관계: 셀러 업체 1 → 담당자 N</span>
-                    </header>
-
-                    <div class="grid">
-                        <div class="col-6">
-                            <div class="panel">
-                                <div class="kicker">구조</div>
-                                <div class="list" style="margin-top: 8px">
-                                    <div class="item">상위 엔티티: <code>셀러 업체</code></div>
-                                    <div class="item">하위 엔티티: <code>셀러 담당자</code></div>
-                                    <div class="item">관계: <code>1:N</code></div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="panel callout">
-                                <svg
-                                    width="20"
-                                    height="20"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    style="margin-top: 2px"
-                                >
-                                    <circle cx="12" cy="12" r="10" stroke="currentColor" />
-                                    <path d="M12 8v5" stroke="currentColor" />
-                                    <circle cx="12" cy="16" r="1" fill="currentColor" />
-                                </svg>
-                                <div>
-                                    <strong>필드 확정 필요</strong><br />
-                                    업체/담당자 필드는 실제 정산·계약 프로세스에 맞춰 세부
-                                    확정합니다.
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-12">
-                            <div class="grid">
-                                <div class="col-6">
-                                    <div class="kicker">셀러 업체 (예시 필드)</div>
-                                    <table>
-                                        <thead>
-                                            <tr>
-                                                <th>항목</th>
-                                                <th>설명</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td>업체명</td>
-                                                <td>셀러 회사명</td>
-                                            </tr>
-                                            <tr>
-                                                <td>브랜드</td>
-                                                <td>주요 브랜드</td>
-                                            </tr>
-                                            <tr>
-                                                <td>사업자번호</td>
-                                                <td>사업자 등록번호</td>
-                                            </tr>
-                                            <tr>
-                                                <td>거래은행 / 계좌번호</td>
-                                                <td>정산용 정보</td>
-                                            </tr>
-                                            <tr>
-                                                <td>주요담당자</td>
-                                                <td>대표 담당자</td>
-                                            </tr>
-                                            <tr>
-                                                <td>상태</td>
-                                                <td>거래중 / 중단 등</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <div class="col-6">
-                                    <div class="kicker">셀러 담당자 (예시 필드)</div>
-                                    <table>
-                                        <thead>
-                                            <tr>
-                                                <th>항목</th>
-                                                <th>설명</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td>이름</td>
-                                                <td>담당자명</td>
-                                            </tr>
-                                            <tr>
-                                                <td>직책</td>
-                                                <td>직위</td>
-                                            </tr>
-                                            <tr>
-                                                <td>연락처</td>
-                                                <td>전화/이메일</td>
-                                            </tr>
-                                            <tr>
-                                                <td>담당 브랜드</td>
-                                                <td>브랜드명</td>
-                                            </tr>
-                                            <tr>
-                                                <td>메모</td>
-                                                <td>비고</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-12">
-                            <div class="kicker">주요 기능</div>
-                            <div class="list">
-                                <div class="item">
-                                    셀러 업체 <code>등록 · 수정 · 삭제 · 조회</code> (*필터 협의)
-                                </div>
-                                <div class="item">
-                                    셀러 담당자 <code>등록 · 수정 · 삭제 · 조회</code> (*필터 협의)
-                                </div>
-                                <div class="item">셀러/품목별 <code>수수료율 관리</code></div>
-                                <div class="item">
-                                    공구계획서 <code>엑셀 저장 (수수료 포함/제외)</code>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- 3. CS 관리 (CM) -->
-                <section class="card" id="cm">
-                    <header>
-                        <h3>3. CS 관리 (CM)</h3>
-                        <span class="status">문의 흐름 표준화</span>
-                    </header>
-                    <div class="grid">
-                        <div class="col-12">
-                            <div class="kicker">구성요소</div>
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>항목</th>
-                                        <th>설명</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>문의번호</td>
-                                        <td>자동 생성 고유 ID</td>
-                                    </tr>
-                                    <tr>
-                                        <td>매입처/판매처 여부</td>
-                                        <td>문의 주체 구분</td>
-                                    </tr>
-                                    <tr>
-                                        <td>업체명</td>
-                                        <td>문의 업체명</td>
-                                    </tr>
-                                    <tr>
-                                        <td>제목</td>
-                                        <td>문의 제목</td>
-                                    </tr>
-                                    <tr>
-                                        <td>내용</td>
-                                        <td>상세 내용</td>
-                                    </tr>
-                                    <tr>
-                                        <td>담당자</td>
-                                        <td>내부 담당자</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="col-12">
-                            <div class="kicker">주요 기능</div>
-                            <div class="list">
-                                <div class="item">문의 <code>등록 · 수정 · 삭제 · 조회</code></div>
-                                <div class="item">
-                                    검색/필터: 업체명, 담당자, 상태 등
-                                    <span class="label">(*옵션 협의)</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- 4. 유저 관리 -->
-                <section class="card" id="user">
-                    <header>
-                        <h3>4. 유저 관리</h3>
-                        <span class="status">권한 기반 접근 제어</span>
-                    </header>
-
-                    <div class="grid">
-                        <div class="col-12">
-                            <div class="kicker">계층 구조</div>
-                            <div class="list">
-                                <div class="item">
-                                    <strong>총괄 관리자 (Admin)</strong> — 시스템 전체 권한
-                                </div>
-                                <div class="item">
-                                    <strong>중간 관리자 (Manager)</strong> — 팀별 관리/승인
-                                </div>
-                                <div class="item">
-                                    <strong>팀원 (Staff)</strong> — MD / Sales / CM
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-12">
-                            <div class="kicker">유저 구성요소</div>
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>항목</th>
-                                        <th>설명</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>이름</td>
-                                        <td>실명</td>
-                                    </tr>
-                                    <tr>
-                                        <td>직급</td>
-                                        <td>팀장/팀원 등</td>
-                                    </tr>
-                                    <tr>
-                                        <td>연락처</td>
-                                        <td>전화/이메일</td>
-                                    </tr>
-                                    <tr>
-                                        <td>소속팀</td>
-                                        <td>MD / Sales / CM</td>
-                                    </tr>
-                                    <tr>
-                                        <td>상태</td>
-                                        <td>활성/비활성</td>
-                                    </tr>
-                                    <tr>
-                                        <td>최근접속일</td>
-                                        <td>마지막 로그인</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="col-12">
-                            <div class="kicker">주요 기능</div>
-                            <div class="list">
-                                <div class="item">직원 <code>등록 · 수정 · 삭제 · 조회</code></div>
-                                <div class="item">로그인 (내부 등록 전용, 회원가입 없음)</div>
-                                <div class="item">
-                                    직원별 <code>활동 로그 추적</code> (CRUD 이력 포함)
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- 5. 부가 작업 (Infra & System) -->
-                <section class="card" id="infra">
-                    <header>
-                        <h3>5. 부가 작업 (Infra & System)</h3>
-                        <span class="status">AWS 기반</span>
-                    </header>
-
-                    <div class="grid">
-                        <div class="col-12">
-                            <div class="kicker">인프라 구성</div>
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>항목</th>
-                                        <th>설명</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>서버</td>
-                                        <td>AWS EC2 · Node.js/NestJS</td>
-                                    </tr>
-                                    <tr>
-                                        <td>DB</td>
-                                        <td>AWS RDS (MySQL 또는 PostgreSQL)</td>
-                                    </tr>
-                                    <tr>
-                                        <td>배포</td>
-                                        <td>CodeDeploy / S3</td>
-                                    </tr>
-                                    <tr>
-                                        <td>백업/마이그레이션</td>
-                                        <td>기존 엑셀 → DB 이관 및 주기 백업</td>
-                                    </tr>
-                                    <tr>
-                                        <td>도메인</td>
-                                        <td>Route53 연결</td>
-                                    </tr>
-                                    <tr>
-                                        <td>동시성</td>
-                                        <td>실시간 반영(SSE/WebSocket/Redis) 여부 결정</td>
-                                    </tr>
-                                    <tr>
-                                        <td>권한/보안</td>
-                                        <td>역할 기반 접근 제어(RBAC), 비밀관리(SSM)</td>
-                                    </tr>
-                                    <tr>
-                                        <td>로깅/모니터링</td>
-                                        <td>CloudWatch, (옵션) Sentry</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- 차후 회의 필요 항목 -->
-                <section class="card" id="pending">
-                    <header>
-                        <h3>차후 회의 필요 항목</h3>
-                        <span class="status">Decision List</span>
-                    </header>
-                    <div class="list">
-                        <div class="item">① 매입처/셀러 <code>조회 필터</code> 조건 확정</div>
-                        <div class="item">② 셀러 업체·담당자 <code>필드 스키마</code> 확정</div>
-                        <div class="item">③ <code>동시성 전략</code> (실시간 vs Polling) 결정</div>
-                        <div class="item">④ <code>정산자료주체</code> 필드 역할/흐름 정의</div>
-                        <div class="item">⑤ <code>공동구매계획서 엑셀</code> 포맷 확정</div>
-                        <div class="item">⑥ <code>로그 수집 범위</code> (API/이벤트) 결정</div>
-                    </div>
-                </section>
-
-                <div class="footer">
-                    © 케이웨이컴퍼니 · ERP Draft v0.1 · 본 문서는 내부 검토용 시안입니다.
+                <h3>📱 4-1. 통역사 모바일 앱</h3>
+                <div class="card">
+                    <strong>1) 로그인 및 권한</strong>
+                    <ul>
+                        <li>이메일/전화번호 기반 로그인</li>
+                        <li>JWT 인증</li>
+                        <li>상태(휴무/활성) 설정 가능</li>
+                    </ul>
                 </div>
-            </main>
+
+                <div class="card">
+                    <strong>2) 메인 화면</strong>
+                    <ul>
+                        <li>신규 의뢰 리스트</li>
+                        <li>배정된 일정 캘린더</li>
+                        <li>진행 중 서비스 표시</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <strong>3) 신규 의뢰 기능</strong>
+                    <ul>
+                        <li>FCM/APNs를 통한 신규 의뢰 푸시 수신</li>
+                        <li>의뢰 ID, 시간/장소, 요청사항 확인</li>
+                        <li>즉시 수락 → 원자적 선착 배정</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <strong>4) 서비스 진행 기록</strong>
+                    <ul>
+                        <li>서비스 시작(현장 도착 후)</li>
+                        <li>서비스 완료(종료 기록)</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <strong>5) 일정/이력 확인</strong>
+                    <ul>
+                        <li>월/주/일 캘린더</li>
+                        <li>상태별 필터링</li>
+                    </ul>
+                </div>
+
+                <h3>💻 4-2. 관리자 웹(ERP)</h3>
+                <div class="card">
+                    <strong>1) 로그인/권한</strong>
+                    <ul>
+                        <li>관리자 로그인</li>
+                        <li>RBAC 권한 구조</li>
+                        <li>감사 로그 기록</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <strong>2) 의뢰 관리</strong>
+                    <ul>
+                        <li>의뢰 등록/수정</li>
+                        <li>리스트·상세 조회</li>
+                        <li>상태 이력 확인</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <strong>3) 배정 관리</strong>
+                    <ul>
+                        <li>통역사 전체 푸시 발송</li>
+                        <li>선착 배정 원자성 보장</li>
+                        <li>실시간 배정 현황 모니터링</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <strong>4) 대시보드</strong>
+                    <ul>
+                        <li>오늘 의뢰 수/배정률</li>
+                        <li>진행 상태 통계</li>
+                        <li>통역사별 실적</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <strong>5) 일정 및 이력 관리</strong>
+                    <ul>
+                        <li>통역사별 일정 캘린더</li>
+                        <li>의뢰 상태 히스토리</li>
+                    </ul>
+                </div>
+
+                <h3>🔔 4-3. 알림/실시간</h3>
+                <ul>
+                    <li>푸시 알림(신규 의뢰/배정 확정)</li>
+                    <li>실시간 진행 상태 업데이트(WebSocket)</li>
+                </ul>
+
+                <h3>🗄 4-4. 백엔드/DB</h3>
+                <ul>
+                    <li>NestJS 기반 REST API</li>
+                    <li>JWT 인증 + RBAC</li>
+                    <li>MySQL DB 테이블 설계</li>
+                    <li>S3 파일 저장(선택)</li>
+                </ul>
+            </div>
+
+            <!-- 5. 기술 스택 -->
+            <div class="section">
+                <h2>5. 기술 스택</h2>
+                <ul>
+                    <li>모바일 앱: Flutter 또는 React Native</li>
+                    <li>관리자 웹: React</li>
+                    <li>백엔드: NestJS + MySQL</li>
+                    <li>인프라: AWS 서울 리전</li>
+                    <li>푸시: FCM / APNs</li>
+                    <li>CI/CD: GitHub Actions</li>
+                </ul>
+            </div>
         </div>
+
+        <footer>© 2025 통역사 파견/관리 시스템 기능 명세서</footer>
     </body>
 </html>
