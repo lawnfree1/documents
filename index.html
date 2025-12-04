@@ -1,288 +1,105 @@
-<!DOCTYPE html>
-<html lang="ko">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>통역사 파견/관리 시스템 – 기능 명세서</title>
+[
+  {
+    "name": "BusinessNumber",
+    "value": "",
+    "text": "사업자등록번호",
+    "isRequired": true,
+    "defaultValue": "",
+    "type": "text"
+  },
+  {
+    "name": "StartDate",
+    "value": "",
+    "text": "검색시작일(yyyyMM)",
+    "isRequired": false,
+    "defaultValue": "",
+    "type": "text"
+  },
+  {
+    "name": "EndDate",
+    "value": "",
+    "text": "검색종료일(yyyyMM)",
+    "isRequired": false,
+    "defaultValue": "",
+    "type": "text"
+  },
+  {
+    "name": "StartYearGi",
+    "value": "",
+    "text": "검색시작 년도 및 기(yyyyN)",
+    "isRequired": false,
+    "defaultValue": "",
+    "type": "text"
+  },
+  {
+    "name": "EndYearGi",
+    "value": "",
+    "text": "검색종료 년도 및 기(yyyyN)",
+    "isRequired": false,
+    "defaultValue": "",
+    "type": "text"
+  },
+  {
+    "name": "EnglCvaAplnYn",
+    "value": "N",
+    "text": "발급유형",
+    "isRequired": false,
+    "defaultValue": "N",
+    "type": "select",
+    "options": [
+      { "value": "Y", "label": "영문증명" },
+      { "value": "N", "label": "한글증명" }
+    ]
+  },
+  {
+    "name": "ResnoOpYn",
+    "value": "N",
+    "text": "주민등록번호 공개여부",
+    "isRequired": true,
+    "defaultValue": "N",
+    "type": "select",
+    "options": [
+      { "value": "Y", "label": "공개" },
+      { "value": "N", "label": "비공개" }
+    ]
+  },
+  {
+    "name": "IssueType",
+    "value": "99",
+    "text": "사용용도",
+    "isRequired": true,
+    "defaultValue": "99",
+    "type": "select",
+    "options": [
+      { "value": "01", "label": "입찰/계약용" },
+      { "value": "02", "label": "수금용" },
+      { "value": "03", "label": "관공서제출용" },
+      { "value": "04", "label": "대출용" },
+      { "value": "05", "label": "여권또는비자신청용" },
+      { "value": "06", "label": "건강보험/국민연금공단제출용" },
+      { "value": "07", "label": "금융기관제출용" },
+      { "value": "08", "label": "신용카드발급용" },
+      { "value": "99", "label": "기타" }
+    ]
+  },
+  {
+    "name": "Organization",
+    "value": "99",
+    "text": "제출처",
+    "isRequired": true,
+    "defaultValue": "99",
+    "type": "select",
+    "options": [
+      { "value": "01", "label": "금융기관" },
+      { "value": "02", "label": "관공서" },
+      { "value": "03", "label": "조합/협회" },
+      { "value": "04", "label": "거래처" },
+      { "value": "05", "label": "학교" },
+      { "value": "06", "label": "외교부/재외공관" },
+      { "value": "99", "label": "기타" }
+    ]
+  }
+]
 
-        <style>
-            body {
-                font-family: "Noto Sans KR", sans-serif;
-                margin: 0;
-                background: #f5f6fa;
-                color: #333;
-                line-height: 1.6;
-            }
 
-            header {
-                background: #2d6cdf;
-                color: white;
-                padding: 40px 30px;
-                text-align: center;
-                font-size: 26px;
-                font-weight: 700;
-                box-shadow: 0 3px 8px rgba(0, 0, 0, 0.18);
-            }
-
-            .container {
-                max-width: 1080px;
-                margin: 40px auto;
-                background: white;
-                padding: 40px 50px;
-                border-radius: 12px;
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-            }
-
-            h2 {
-                color: #1e3f86;
-                border-left: 6px solid #2d6cdf;
-                padding-left: 12px;
-                margin-top: 60px;
-            }
-
-            h3 {
-                color: #2d6cdf;
-                margin-top: 35px;
-                margin-bottom: 10px;
-            }
-
-            ul {
-                margin-left: 0;
-                padding-left: 20px;
-            }
-
-            li {
-                margin-bottom: 6px;
-            }
-
-            .section {
-                margin-bottom: 60px;
-            }
-
-            .card {
-                border: 1px solid #e1e4ea;
-                background: #fafbff;
-                padding: 18px 20px;
-                border-radius: 8px;
-                margin-bottom: 15px;
-            }
-
-            footer {
-                text-align: center;
-                padding: 40px 0;
-                margin-top: 40px;
-                font-size: 14px;
-                color: #777;
-            }
-
-            .slide-toggle {
-                cursor: pointer;
-                transition: 0.2s ease;
-                font-weight: 600;
-            }
-
-            .slide-content {
-                display: none;
-                margin-top: 12px;
-            }
-
-            .slide-toggle:hover {
-                color: #2d6cdf;
-            }
-        </style>
-
-        <script>
-            function toggle(id) {
-                const el = document.getElementById(id);
-                el.style.display = el.style.display === "block" ? "none" : "block";
-            }
-        </script>
-    </head>
-
-    <body>
-        <header>📌 통역사 파견/관리 시스템 – 기능 명세서 (Feature Specification v0.9)</header>
-
-        <div class="container">
-            <!-- 1. 시스템 개요 -->
-            <div class="section">
-                <h2>1. 시스템 개요</h2>
-                <p>
-                    본 프로젝트는 통역사 파견 및 업무 관리를 위해 관리자 ERP와 통역사 모바일 앱을
-                    구축하여,
-                    <strong
-                        >의뢰 등록 → 실시간 푸시 → 선착 수락 배정 → 서비스 시작/완료 기록 →
-                        일정/현황 관리</strong
-                    >까지 전 과정을 시스템화하는 것을 목표로 합니다.
-                </p>
-
-                <div class="card">
-                    <strong>구성 요소</strong><br />
-                    - 통역사 모바일 앱 (iOS/Android, 내부 배포용)<br />
-                    - 관리자 웹 ERP<br />
-                    - 백엔드 API 및 푸시 서버<br />
-                    - 실시간 상태 반영(WebSocket/Socket.IO)
-                </div>
-            </div>
-
-            <!-- 2. 사용자 유형 -->
-            <div class="section">
-                <h2>2. 사용자 유형</h2>
-
-                <h3>1) 관리자(Admin)</h3>
-                <ul>
-                    <li>의뢰 등록/수정/삭제</li>
-                    <li>통역사 배정 현황 모니터링</li>
-                    <li>진행 상태(배정/시작/완료) 실시간 조회</li>
-                    <li>통역사·의뢰 일정 및 이력 관리</li>
-                </ul>
-
-                <h3>2) 통역사(User)</h3>
-                <ul>
-                    <li>의뢰 목록 및 상세 확인</li>
-                    <li>푸시 알림 수신</li>
-                    <li>즉시 수락 → 자동 배정 확정</li>
-                    <li>서비스 시작/완료 기록</li>
-                    <li>개인 일정 확인</li>
-                </ul>
-            </div>
-
-            <!-- 3. 전체 흐름 -->
-            <div class="section">
-                <h2>3. 전체 흐름(Workflow)</h2>
-                <ol>
-                    <li>국제 고객은 기존 플랫폼에서 예약·결제 완료</li>
-                    <li>관리자 ERP에서 신규 의뢰 등록</li>
-                    <li>모든 통역사 앱으로 푸시 알림 발송</li>
-                    <li>통역사가 ‘즉시 수락’ → 서버 원자적 선착 배정</li>
-                    <li>배정된 통역사에게 배정 확정 푸시 발송</li>
-                    <li>현장 도착 후 서비스 시작</li>
-                    <li>업무 종료 후 서비스 완료</li>
-                    <li>관리자 ERP에서 실시간 상태 및 일정 확인</li>
-                </ol>
-            </div>
-
-            <!-- 4. 기능 상세 -->
-            <div class="section">
-                <h2>4. 기능 상세 명세 (Platform 별)</h2>
-
-                <h3>📱 4-1. 통역사 모바일 앱</h3>
-                <div class="card">
-                    <strong>1) 로그인 및 권한</strong>
-                    <ul>
-                        <li>이메일/전화번호 기반 로그인</li>
-                        <li>JWT 인증</li>
-                        <li>상태(휴무/활성) 설정 가능</li>
-                    </ul>
-                </div>
-
-                <div class="card">
-                    <strong>2) 메인 화면</strong>
-                    <ul>
-                        <li>신규 의뢰 리스트</li>
-                        <li>배정된 일정 캘린더</li>
-                        <li>진행 중 서비스 표시</li>
-                    </ul>
-                </div>
-
-                <div class="card">
-                    <strong>3) 신규 의뢰 기능</strong>
-                    <ul>
-                        <li>FCM/APNs를 통한 신규 의뢰 푸시 수신</li>
-                        <li>의뢰 ID, 시간/장소, 요청사항 확인</li>
-                        <li>즉시 수락 → 원자적 선착 배정</li>
-                    </ul>
-                </div>
-
-                <div class="card">
-                    <strong>4) 서비스 진행 기록</strong>
-                    <ul>
-                        <li>서비스 시작(현장 도착 후)</li>
-                        <li>서비스 완료(종료 기록)</li>
-                    </ul>
-                </div>
-
-                <div class="card">
-                    <strong>5) 일정/이력 확인</strong>
-                    <ul>
-                        <li>월/주/일 캘린더</li>
-                        <li>상태별 필터링</li>
-                    </ul>
-                </div>
-
-                <h3>💻 4-2. 관리자 웹(ERP)</h3>
-                <div class="card">
-                    <strong>1) 로그인/권한</strong>
-                    <ul>
-                        <li>관리자 로그인</li>
-                        <li>RBAC 권한 구조</li>
-                        <li>감사 로그 기록</li>
-                    </ul>
-                </div>
-
-                <div class="card">
-                    <strong>2) 의뢰 관리</strong>
-                    <ul>
-                        <li>의뢰 등록/수정</li>
-                        <li>리스트·상세 조회</li>
-                        <li>상태 이력 확인</li>
-                    </ul>
-                </div>
-
-                <div class="card">
-                    <strong>3) 배정 관리</strong>
-                    <ul>
-                        <li>통역사 전체 푸시 발송</li>
-                        <li>선착 배정 원자성 보장</li>
-                        <li>실시간 배정 현황 모니터링</li>
-                    </ul>
-                </div>
-
-                <div class="card">
-                    <strong>4) 대시보드</strong>
-                    <ul>
-                        <li>오늘 의뢰 수/배정률</li>
-                        <li>진행 상태 통계</li>
-                        <li>통역사별 실적</li>
-                    </ul>
-                </div>
-
-                <div class="card">
-                    <strong>5) 일정 및 이력 관리</strong>
-                    <ul>
-                        <li>통역사별 일정 캘린더</li>
-                        <li>의뢰 상태 히스토리</li>
-                    </ul>
-                </div>
-
-                <h3>🔔 4-3. 알림/실시간</h3>
-                <ul>
-                    <li>푸시 알림(신규 의뢰/배정 확정)</li>
-                    <li>실시간 진행 상태 업데이트(WebSocket)</li>
-                </ul>
-
-                <h3>🗄 4-4. 백엔드/DB</h3>
-                <ul>
-                    <li>NestJS 기반 REST API</li>
-                    <li>JWT 인증 + RBAC</li>
-                    <li>MySQL DB 테이블 설계</li>
-                    <li>S3 파일 저장(선택)</li>
-                </ul>
-            </div>
-
-            <!-- 5. 기술 스택 -->
-            <div class="section">
-                <h2>5. 기술 스택</h2>
-                <ul>
-                    <li>모바일 앱: Flutter 또는 React Native</li>
-                    <li>관리자 웹: React</li>
-                    <li>백엔드: NestJS + MySQL</li>
-                    <li>인프라: AWS 서울 리전</li>
-                    <li>푸시: FCM / APNs</li>
-                    <li>CI/CD: GitHub Actions</li>
-                </ul>
-            </div>
-        </div>
-
-        <footer>© 2025 통역사 파견/관리 시스템 기능 명세서</footer>
-    </body>
-</html>
+$2y$12$UqMCryTqpHAzW3Kv88aCz.YjKKFn8/5SLoO99pXDWpPX4jXwo.rl2
